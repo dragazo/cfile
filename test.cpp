@@ -16,7 +16,7 @@ void write_benchmark(const char *file, std::size_t vals)
 
 	const char *const fmt = integral ? "%u\n" : "%f\n";
 
-	std::cout << "write benchmark " << (integral ? "(integral)" : "(floating point)") << std::endl;
+	std::cerr << "write benchmark " << (integral ? "(integral)\n" : "(floating point)\n");
 
 	{
 		auto start = high_resolution_clock::now();
@@ -25,7 +25,7 @@ void write_benchmark(const char *file, std::size_t vals)
 			for (std::size_t i = 0; i < vals; ++i) f << r() << '\n';
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "    ofstream: " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "    ofstream: " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 	{
 		auto start = high_resolution_clock::now();
@@ -34,7 +34,7 @@ void write_benchmark(const char *file, std::size_t vals)
 			for (std::size_t i = 0; i < vals; ++i) f << r() << '\n';
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "bin ofstream: " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "bin ofstream: " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 
 	{
@@ -44,7 +44,7 @@ void write_benchmark(const char *file, std::size_t vals)
 			for (std::size_t i = 0; i < vals; ++i) f << r() << '\n';
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "     fstream: " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "     fstream: " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 	{
 		auto start = high_resolution_clock::now();
@@ -53,7 +53,7 @@ void write_benchmark(const char *file, std::size_t vals)
 			for (std::size_t i = 0; i < vals; ++i) f << r() << '\n';
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "bin  fstream: " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "bin  fstream: " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 
 	{
@@ -64,7 +64,7 @@ void write_benchmark(const char *file, std::size_t vals)
 			fclose(f);
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "       FILE*: " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "       FILE*: " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 	{
 		auto start = high_resolution_clock::now();
@@ -74,7 +74,7 @@ void write_benchmark(const char *file, std::size_t vals)
 			fclose(f);
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "bin    FILE*: " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "bin    FILE*: " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 
 	{
@@ -84,7 +84,7 @@ void write_benchmark(const char *file, std::size_t vals)
 			for (std::size_t i = 0; i < vals; ++i) f.printf(fmt, r());
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "       cfile: " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "       cfile: " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 	{
 		auto start = high_resolution_clock::now();
@@ -93,7 +93,7 @@ void write_benchmark(const char *file, std::size_t vals)
 			for (std::size_t i = 0; i < vals; ++i) f.printf(fmt, r());
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "bin    cfile: " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "bin    cfile: " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 
 	{
@@ -103,7 +103,7 @@ void write_benchmark(const char *file, std::size_t vals)
 			for (std::size_t i = 0; i < vals; ++i) std::fprintf(f, fmt, r());
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "    () cfile: " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "    () cfile: " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 	{
 		auto start = high_resolution_clock::now();
@@ -112,10 +112,29 @@ void write_benchmark(const char *file, std::size_t vals)
 			for (std::size_t i = 0; i < vals; ++i) std::fprintf(f, fmt, r());
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "bin () cfile: " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "bin () cfile: " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 
-	std::cout << '\n';
+	{
+		auto start = high_resolution_clock::now();
+		{
+			std::freopen(file, "w", stdout);
+			for (std::size_t i = 0; i < vals; ++i) std::printf(fmt, r());
+		}
+		auto stop = high_resolution_clock::now();
+		std::cerr << "      stdout: " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
+	}
+	{
+		auto start = high_resolution_clock::now();
+		{
+			std::freopen(file, "wb", stdout);
+			for (std::size_t i = 0; i < vals; ++i) std::printf(fmt, r());
+		}
+		auto stop = high_resolution_clock::now();
+		std::cerr << "bin   stdout: " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
+	}
+
+	std::cerr << '\n';
 }
 
 template<bool integral>
@@ -126,7 +145,7 @@ void read_benchmark(const char *file)
 	typedef std::conditional_t<integral, std::size_t, double> type;
 	const char *fmt = integral ? "%zu\n" : "%lf\n";
 
-	std::cout << "read benchmark " << (integral ? "(integral)" : "(floating point)") << std::endl;
+	std::cerr << "read benchmark " << (integral ? "(integral)\n" : "(floating point)\n");
 
 	{
 		type sum = 0;
@@ -136,7 +155,7 @@ void read_benchmark(const char *file)
 			for (type temp; f >> temp; sum += temp);
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "    ifstream: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "    ifstream: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 	{
 		type sum = 0;
@@ -146,7 +165,7 @@ void read_benchmark(const char *file)
 			for (type temp; f >> temp; sum += temp);
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "bin ifstream: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "bin ifstream: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 
 	{
@@ -157,7 +176,7 @@ void read_benchmark(const char *file)
 			for (type temp; f >> temp; sum += temp);
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "     fstream: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "     fstream: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 	{
 		type sum = 0;
@@ -167,7 +186,7 @@ void read_benchmark(const char *file)
 			for (type temp; f >> temp; sum += temp);
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "bin  fstream: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "bin  fstream: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 
 	{
@@ -179,7 +198,7 @@ void read_benchmark(const char *file)
 			fclose(f);
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "       FILE*: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "       FILE*: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 	{
 		type sum = 0;
@@ -190,7 +209,7 @@ void read_benchmark(const char *file)
 			fclose(f);
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "bin    FILE*: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "bin    FILE*: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 
 	{
@@ -201,7 +220,7 @@ void read_benchmark(const char *file)
 			for (type temp; f.scanf(fmt, &temp) == 1; sum += temp);
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "       cfile: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "       cfile: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 	{
 		type sum = 0;
@@ -211,7 +230,7 @@ void read_benchmark(const char *file)
 			for (type temp; f.scanf(fmt, &temp) == 1; sum += temp);
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "bin    cfile: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "bin    cfile: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 
 	{
@@ -222,7 +241,7 @@ void read_benchmark(const char *file)
 			for (type temp; std::fscanf(f, fmt, &temp) == 1; sum += temp);
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "    () cfile: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "    () cfile: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 	{
 		type sum = 0;
@@ -232,10 +251,31 @@ void read_benchmark(const char *file)
 			for (type temp; std::fscanf(f, fmt, &temp) == 1; sum += temp);
 		}
 		auto stop = high_resolution_clock::now();
-		std::cout << "bin () cfile: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms" << std::endl;
+		std::cerr << "bin () cfile: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
 	}
 
-	std::cout << '\n';
+	{
+		type sum = 0;
+		auto start = high_resolution_clock::now();
+		{
+			std::freopen(file, "r", stdin);
+			for (type temp; std::scanf(fmt, &temp) == 1; sum += temp);
+		}
+		auto stop = high_resolution_clock::now();
+		std::cerr << "       stdin: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
+	}
+	{
+		type sum = 0;
+		auto start = high_resolution_clock::now();
+		{
+			std::freopen(file, "rb", stdin);
+			for (type temp; std::scanf(fmt, &temp) == 1; sum += temp);
+		}
+		auto stop = high_resolution_clock::now();
+		std::cerr << "bin    stdin: " << sum << " - " << duration_cast<milliseconds>(stop - start).count() << " ms\n";
+	}
+
+	std::cerr << '\n';
 }
 
 int main(int argc, const char *argv[])

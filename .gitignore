@@ -1,3 +1,5 @@
+# custom stuff
+*.dat
 
 # Created by https://www.gitignore.io/api/c,c++,linux,windows,notepadpp,visualstudio,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=c,c++,linux,windows,notepadpp,visualstudio,visualstudiocode
